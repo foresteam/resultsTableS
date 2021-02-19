@@ -36,6 +36,9 @@ app.get('/readf', async (rq, rs) => {
 	for (let file of files) {
 		let records = JSON.parse(fs.readFileSync(path + '/' + file, 'utf8'));
 		for (let data of records) {
+			for (let [k, v] of Object.entries(data))
+				if (typeof v == 'string')
+					data[k] = v.toLowerCase();
 			let record = new Record(data);
 			await record.save();
 		}
@@ -63,13 +66,13 @@ app.post('/', async (rq, rs) => {
 	datetimeF[assoc[datetimeFilter]] = datetime;
 
 	let qparams = {
-		taskName: {$regex: `.*(${taskName}).*`},
-		subTaskName: {$regex: `.*(${subTaskName}).*`},
-		student: {$regex: `.*(${student}).*`},
-		class: {$regex: `.*(${_class}).*`},
-		text: {$regex: `.*(${text}).*`},
-		correctAnswer: {$regex: `.*(${correctAnswer}).*`},
-		answer: {$regex: `.*(${answer}).*`},
+		taskName: {$regex: `.*(${taskName.toLowerCase()}).*`},
+		subTaskName: {$regex: `.*(${subTaskName.toLowerCase()}).*`},
+		student: {$regex: `.*(${student.toLowerCase()}).*`},
+		class: {$regex: `.*(${_class.toLowerCase()}).*`},
+		text: {$regex: `.*(${text.toLowerCase()}).*`},
+		correctAnswer: {$regex: `.*(${correctAnswer.toLowerCase()}).*`},
+		answer: {$regex: `.*(${answer.toLowerCase()}).*`},
 		mark: markF,
 		datetime: datetimeF
 	};
