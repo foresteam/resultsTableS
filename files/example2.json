@@ -1,0 +1,24 @@
+[
+	{
+		"taskName": "Zadanie",
+		"subTaskName": "",
+		"student": "Макс",
+		"class": "11B",
+		"text": "ГЫК. кириллический текст",
+		"correctAnswer": "111",
+		"answer": "222",
+		"mark": 0.5,
+		"datetime": 666
+	},
+	{
+		"taskName": "Zadanie",
+		"subTaskName": "",
+		"student": "Федот",
+		"class": "11Е",
+		"text": "text",
+		"correctAnswer": "111",
+		"answer": "222",
+		"mark": 0.7,
+		"datetime": 668
+	}
+]

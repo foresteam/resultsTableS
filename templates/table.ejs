@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Export</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		table {
+			width: 100%;
+		}
+		thead td {
+			text-align: center;
+			background: #EEE;
+		}
+		td {
+			border: 1px solid black;
+			word-wrap: break-word;
+			word-break: break-all;
+			vertical-align: top;
+		}
+	</style>
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<td style="min-width: 100px">taskName</td>
+				<td style="min-width: 100px">subTaskName</td>
+				<td style="min-width: 100px">student</td>
+				<td style="min-width: 50px">class</td>
+				<td style="min-width: 200px">text</td>
+				<td style="min-width: 100px">correctAnswer</td>
+				<td style="min-width: 100px">answer</td>
+				<td style="min-width: 50px">mark</td>
+				<td style="min-width: 80px">datetime</td>
+			</tr>
+		</thead>
+		<% for (let record of table) {
+			%>
+			<tr>
+				<td><%= record.taskName %></td>
+				<td><%= record.subTaskName %></td>
+				<td><%= record.student %></td>
+				<td><%= record.class %></td>
+				<td><%= record.text %></td>
+				<td><%= record.correctAnswer %></td>
+				<td><%= record.answer %></td>
+				<td><%= parseInt(record.mark * 100) + '%' %></td>
+				<td><%= formDate(new Date(record.datetime)) %></td>
+			</tr>
+			<%
+		} %>
+	</table>
+</body>
+</html>

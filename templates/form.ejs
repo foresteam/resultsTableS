@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Настройки</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			display: flex;
+			flex-direction: column;
+			text-align: center;
+			align-items: center;
+			align-content: center;
+		}
+		div {
+			margin: 5pt;
+			line-height: 18pt;
+		}
+	</style>
+</head>
+<body>
+	<form action="readf">
+		<input type="text" name="dir" value="./files" placeholder="Путь к директории">
+		<input type="submit" value="Обновить базу из файлов">
+	</form>
+	<form method="POST" target="_blank">
+		<div>
+			<h3>Фильтры. Оставьте поля пустыми, чтобы они не учитывались</h3>
+			taskName: <input type="text" name="taskName" placeholder="Имя задания"><br>
+			subTaskName: <input type="text" name="subTaskName" placeholder="Имя подзадания"><br>
+			student: <input type="text" name="student" placeholder="Ф И О ученика"><br>
+			class: <input type="text" name="class" placeholder="Класс"><br>
+			text: <input type="text" name="text" placeholder="Текст задания, ключи"><br>
+			correctAnswer: <input type="text" name="correctAnswer" placeholder="Правильный ответ"><br>
+			answer: <input type="text" name="answer" placeholder="Ответ"><br>
+			mark: <input type="number" name="mark" placeholder="Оценка, %" min="0" max="100">
+			<select name="markFilter">
+				<option>=</option>
+				<option>≥</option>
+				<option>≤</option>
+				<option><</option>
+				<option>></option>
+			</select><br>
+			datetime: <input type="text" name="datetime" placeholder="YYYY-MM-DD">
+			<select name="datetimeFilter">
+				<option>=</option>
+				<option>≥</option>
+				<option>≤</option>
+				<option><</option>
+				<option>></option>
+			</select>
+		</div>
+		<div>
+			<h3>Сортировка</h3>
+			Сортировка по:
+			<select name="sortBy">
+				<option></option>
+				<option>taskName</option>
+				<option>subTaskName</option>
+				<option>student</option>
+				<option>class</option>
+				<option>text</option>
+				<option>correctAnswer</option>
+				<option>answer</option>
+				<option>mark</option>
+				<option>datetime</option>
+			</select>
+			Порядок:
+			<select name="sortOrder">
+				<option>Возрастание</option>
+				<option>Убывание</option>
+			</select>
+		</div>
+		<input type="submit" value="Сформировать">
+	</form>
+</body>
+</html>
