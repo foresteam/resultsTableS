@@ -1,0 +1,19 @@
+{
+  "name": "resultstable",
+  "version": "1.0.0",
+  "description": "Application forms table with results given in files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foresteam/resultsTableS.git"
+  },
+  "author": "Foresteam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foresteam/resultsTableS/issues"
+  },
+  "homepage": "https://github.com/foresteam/resultsTableS#readme"
+}
