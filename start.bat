@@ -1,2 +1,2 @@
-node index.js
+nodejs\node index.js
 pause
