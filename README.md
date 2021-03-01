@@ -5,7 +5,6 @@
 - Исходный текст (index.js, templates/)
 - Подключаемые модули (node_modules/)
 - Примеры файлов для импорта (files/)
-- Лицензия MIT (LICENCE)
 - Файлы проекта (package.json, package-lock.json)
 - Файл для запуска (start.bat)
 - Ярлык на меню (MENU.url)
