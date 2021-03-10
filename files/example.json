@@ -1,24 +1,44 @@
 [
 	{
-		"taskName": "Zadanie",
-		"subTaskName": "netu",
-		"student": "Max",
-		"class": "11B",
-		"text": "Огроооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооооомный кириллический текст",
-		"correctAnswer": "111",
-		"answer": "222",
-		"mark": 0.5,
-		"datetime": 666
+		"taskName": "Nomer 1", 
+		"student": "Vasya Fedorov", 
+		"class": "11B", 
+		"mark": 0.0, 
+		"datetime": 0,
+		"subTasks": [ 
+			{
+				"name": "1", 
+				"text": "Hello", 
+				"correctAnswer": "0", 
+				"answer": "1" 
+			},
+			{
+				"name": "2",
+				"text": "Bye",
+				"correctAnswer": "1",
+				"answer": "0"
+			}
+		]
 	},
 	{
-		"taskName": "Zadanie",
-		"subTaskName": "netu",
-		"student": "Egor",
+		"taskName": "Nomer 1",
+		"student": "Fedor Vasiliev",
 		"class": "11B",
-		"text": "text",
-		"correctAnswer": "111",
-		"answer": "222",
-		"mark": 0.7,
-		"datetime": 668
+		"mark": 1,
+		"datetime": 0,
+		"subTasks": [
+			{
+				"name": "1",
+				"text": "Hello",
+				"correctAnswer": "0",
+				"answer": "0"
+			},
+			{
+				"name": "2",
+				"text": "Bye",
+				"correctAnswer": "1",
+				"answer": "1"
+			}
+		]
 	}
 ]

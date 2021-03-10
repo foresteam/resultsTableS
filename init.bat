@@ -1,2 +1,2 @@
-nodejs\npm install
+npm install
 pause

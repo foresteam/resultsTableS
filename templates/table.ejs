@@ -44,8 +44,8 @@
 				<td><%= record.text %></td>
 				<td><%= record.correctAnswer %></td>
 				<td><%= record.answer %></td>
-				<td><%= parseInt(record.mark * 100) + '%' %></td>
-				<td><%= formDate(new Date(record.datetime)) %></td>
+				<td><%= record.mark %></td>
+				<td><%= record.datetime %></td>
 			</tr>
 			<%
 		} %>

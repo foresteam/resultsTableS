@@ -5,25 +5,29 @@ const mongoose = require('mongoose');
 const { exec } = require('child_process');
 const fs = require('fs');
 
+const CFG = require('./cfg.js');
+
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/templates');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const formDate = date => `${(date.getDate() < 10 ? '0' : '') + date.getDate()}.${((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1)}.${date.getFullYear()}`;
+const formDatetime = date => `${formDate(date)} - ${(date.getHours() < 10 ? '0' : '') + date.getHours()}:${(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()}`;
 
-
-mongoose.connect('mongodb://localhost/resultsTableS', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(CFG.DBURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const Record = mongoose.model('Record', new mongoose.Schema({
 	taskName: String,
-	subTaskName: String,
 	student: String,
 	class: String,
-	text: String,
-	correctAnswer: String,
-	answer: String,
 	mark: Number,
-	datetime: Number
+	datetime: Number,
+	subTasks: Array({
+		name: String,
+		text: String,
+		correctAnswer: String,
+		answer: String,
+	})
 }));
 Record.createCollection();
 
@@ -67,40 +71,49 @@ app.post('/', async (rq, rs) => {
 
 	let qparams = {
 		taskName: {$regex: `.*(${taskName.toLowerCase()}).*`},
-		subTaskName: {$regex: `.*(${subTaskName.toLowerCase()}).*`},
 		student: {$regex: `.*(${student.toLowerCase()}).*`},
 		class: {$regex: `.*(${_class.toLowerCase()}).*`},
-		text: {$regex: `.*(${text.toLowerCase()}).*`},
-		correctAnswer: {$regex: `.*(${correctAnswer.toLowerCase()}).*`},
-		answer: {$regex: `.*(${answer.toLowerCase()}).*`},
 		mark: markF,
-		datetime: datetimeF
+		datetime: datetimeF,
+		subTasks: {
+			name: {$regex: `.*(${subTaskName.toLowerCase()}).*`},
+			text: {$regex: `.*(${text.toLowerCase()}).*`},
+			correctAnswer: {$regex: `.*(${correctAnswer.toLowerCase()}).*`},
+			answer: {$regex: `.*(${answer.toLowerCase()}).*`}
+		}
 	};
 	if (!taskName)
 		delete qparams.taskName;
-	if (!subTaskName)
-		delete qparams.subTaskName;
 	if (!student)
 		delete qparams.student;
 	if (!_class)
 		delete qparams.class;
-	if (!text)
-		delete qparams.text;
-	if (!correctAnswer)
-		delete qparams.correctAnswer;
-	if (!answer)
-		delete qparams.answer;
 	if (!mark)
 		delete qparams.mark;
 	if (!datetime)
 		delete qparams.datetime;
+	if (!subTaskName)
+		delete qparams.subTasks.name;
+	if (!text)
+		delete qparams.subTasks.text;
+	if (!correctAnswer)
+		delete qparams.subTasks.correctAnswer;
+	if (!answer)
+		delete qparams.subTasks.answer;
+	if (!subTaskName && !text && !correctAnswer && !answer)
+		delete qparams.subTasks;
 
 	let sort = {};
 	if (sortBy)
 		sort[sortBy] = sortOrder == 'Возрастание' ? 1 : -1;
 	let table = await Record.find(qparams).sort(sort).exec();
 
-	rs.render('table', { table, formDate });
+	for (let record of table) {
+		record.mark = parseInt(record.mark * 100) + '%';
+		record.datetime = formDatetime(new Date(record.datetime));
+	}
+
+	rs.render('table', { table });
 })
 
 app.listen(1338);
