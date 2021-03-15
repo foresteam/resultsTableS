@@ -1,3 +1,4 @@
 node_modules
 nodejs
 cfg.js
+examples/__pycache__
