@@ -163,18 +163,22 @@ app.post('/', async (rq, rs) => {
 		];
 		const title = sheet.addRow(ttrv.map(v => v[0]));
 		for (let r of table)
-			sheet.addRow([r.taskName, r.student, r.class, r.mark, r.datetime, r.name, r.text, r.correctAnswer, r.answer]);
+			sheet.addRow([r.taskName, r.student, r.class, r.mark, r.datetime, r.name, r.text, r.correctAnswer, r.answer]).alignment = { horizontal: 'center' };
 		for (let i = 1; i <= ttrv.length; i++) {
-			title.getCell(i).fill = {
+			let cell = title.getCell(i);
+			cell.fill = {
 				type: 'pattern',
 				pattern: 'lightGray'
 			};
+			cell.alignment = { horizontal: 'center' };
 			let col = sheet.getColumn(i);
-			col.alignment = { wrapText: true };
+			if (!col.alignment)
+				col.alignment = {};
+			col.alignment.wrapText = true;
 			col.width = ttrv[i - 1][1];
 		}
 		
-		await wb.xlsx.writeFile('./export.xlsx');
+		await wb.xlsx.writeFile('./export.xlsx', { useStyles: true });
 		rs.download('./export.xlsx');
 	}
 	else
