@@ -1,9 +1,14 @@
+import requests
 from format import export
 from random import randint as rnd
 from time import time
 from json import dumps as jd
 
 TASKNAME = 'My task name'
+
+def httpPost(uri, data):
+    rs = requests.post(uri, json=data, headers={'Content-Type': 'application/json', 'Accept': 'text/plain'})
+    print(rs)
 
 # generator of records
 def NewRecord(student):
@@ -33,7 +38,7 @@ for i in range(3):
     test.append(task)
 
 # students' results
-for _ in range(1):
+for i in range(1):
     username = input('Enter your full name: ')
 
     # claiming the answers
@@ -58,3 +63,4 @@ for _ in range(1):
     data.append(sdata)
 
 print(jd(data, indent=4, sort_keys=False))
+httpPost('http://localhost:1338/dbappend', data)
