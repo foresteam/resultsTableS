@@ -24,28 +24,28 @@
 		<thead>
 			<tr>
 				<td style="min-width: 100px">taskName</td>
-				<td style="min-width: 100px">subTaskName</td>
 				<td style="min-width: 100px">student</td>
 				<td style="min-width: 50px">class</td>
+				<td style="min-width: 50px">mark</td>
+				<td style="min-width: 80px">datetime</td>
+				<td style="min-width: 100px">subTaskName</td>
 				<td style="min-width: 200px">text</td>
 				<td style="min-width: 100px">correctAnswer</td>
 				<td style="min-width: 100px">answer</td>
-				<td style="min-width: 50px">mark</td>
-				<td style="min-width: 80px">datetime</td>
 			</tr>
 		</thead>
 		<% for (let record of table) {
 			%>
 			<tr>
 				<td><%= record.taskName %></td>
-				<td><%= record.name %></td>
 				<td><%= record.student %></td>
 				<td><%= record.class %></td>
+				<td><%= record.mark %></td>
+				<td><%= record.datetime %></td>
+				<td><%= record.name %></td>
 				<td><%= record.text %></td>
 				<td><%= record.correctAnswer %></td>
 				<td><%= record.answer %></td>
-				<td><%= record.mark %></td>
-				<td><%= record.datetime %></td>
 			</tr>
 			<%
 		} %>

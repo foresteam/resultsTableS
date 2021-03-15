@@ -6,11 +6,7 @@ from json import dumps as jd
 
 TASKNAME = 'My task name'
 
-def httpPost(uri, data):
-    rs = requests.post(uri, json=data, headers={'Content-Type': 'application/json', 'Accept': 'text/plain'})
-    print(rs)
-
-# generator of records
+# генератор записей
 def NewRecord(student):
     cp = export[0].copy()
     cp['subTasks'].clear()
@@ -30,37 +26,37 @@ def NewSubTask(q):
 data = []
 
 test = []
-# generating the test
+# генерируем тест
 for i in range(3):
     a, b = rnd(0, 9), rnd(0, 9)
     task = {'id': i, 'nums': [a, b], 'correctAnswer': str(a * b), 'answer': None, 'correct': False}
     task['text'] = f'{a} * {b} = '
     test.append(task)
 
-# students' results
+# результаты учеников
 for i in range(1):
     username = input('Enter your full name: ')
 
-    # claiming the answers
+    # собираем ответы
     for q in test:
         a, b = q['nums']
         q['text'] = f'{a} * {b} = '
         q['answer'] = input(q['text'])
         q['correct'] = q['correctAnswer'] == q['answer']
 
-    # building export data for the student
+    # строим экспорт для студента
     sdata = NewRecord(username)
     sdata['subTasks'] = [NewSubTask(q) for q in test]
 
-    # calculating the mark
+    # вычисляем оценку
     total = len(test)
     correct = 0
     for q in test:
         correct += q['correct'] # note: 0 = False, 1 = True
     sdata['mark'] = correct / total
 
-    # appending info about the student to data
+    # добавляем ученика в конечный массив
     data.append(sdata)
 
 print(jd(data, indent=4, sort_keys=False))
-httpPost('http://localhost:1338/dbappend', data)
+requests.post('http://localhost:1338/dbappend', json=data) # шлем на сервер

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { Workbook } = require('exceljs');
 
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -32,41 +33,7 @@ const Record = mongoose.model('Record', new mongoose.Schema({
 }));
 Record.createCollection();
 
-
-app.get('/readf', async (rq, rs) => {
-	await Record.deleteMany({}).exec();
-
-	let path = rq.query.dir || './files';
-	let files = fs.readdirSync(path);
-	for (let file of files) {
-		let records = JSON.parse(fs.readFileSync(path + '/' + file, 'utf8'));
-		for (let data of records) {
-			for (let [k, v] of Object.entries(data))
-				if (typeof v == 'string')
-					data[k] = v.toLowerCase();
-			let record = new Record(data);
-			await record.save();
-		}
-	}
-
-	rs.send('<script>alert("Успех"); location.href = "/";</script>');
-});
-app.post('/dbappend', async (rq, rs) => {
-	const json = rq.body;
-	console.log(json);
-	for (const jrec of json) {
-		for (k in jrec)
-			if (typeof jrec[k] == 'string')
-				jrec[k] = jrec[k].toLowerCase();
-		let rec = new Record(jrec);
-		rec.save();
-	}
-	rs.end();
-});
-app.get('/', (rq, rs) => {
-	rs.render('form');
-});
-app.post('/', async (rq, rs) => {
+const getTable = async (rq, rs) => {
 	let { taskName, subTaskName, student, class: _class, text, correctAnswer, answer, mark, markFilter, datetime, datetimeFilter, sortBy, sortOrder } = rq.body;
 	datetime = Date.parse(datetime);
 	mark = Number.parseFloat(mark);
@@ -88,12 +55,10 @@ app.post('/', async (rq, rs) => {
 		class: {$regex: `.*(${_class.toLowerCase()}).*`},
 		mark: markF,
 		datetime: datetimeF,
-		subTasks: {
-			name: {$regex: `.*(${subTaskName.toLowerCase()}).*`},
-			text: {$regex: `.*(${text.toLowerCase()}).*`},
-			correctAnswer: {$regex: `.*(${correctAnswer.toLowerCase()}).*`},
-			answer: {$regex: `.*(${answer.toLowerCase()}).*`}
-		}
+		'subTasks.name': {$regex: `.*(${subTaskName.toLowerCase()}).*`},
+		'subTasks.text': {$regex: `.*(${text.toLowerCase()}).*`},
+		'subTasks.correctAnswer': {$regex: `.*(${correctAnswer.toLowerCase()}).*`},
+		'subTasks.answer': {$regex: `.*(${answer.toLowerCase()}).*`}
 	};
 	if (!taskName)
 		delete qparams.taskName;
@@ -106,21 +71,23 @@ app.post('/', async (rq, rs) => {
 	if (!datetime)
 		delete qparams.datetime;
 	if (!subTaskName)
-		delete qparams.subTasks.name;
+		delete qparams['subTasks.name'];
 	if (!text)
-		delete qparams.subTasks.text;
+		delete qparams['subTasks.text'];
 	if (!correctAnswer)
-		delete qparams.subTasks.correctAnswer;
+		delete qparams['subTasks.correctAnswer'];
 	if (!answer)
-		delete qparams.subTasks.answer;
-	if (!subTaskName && !text && !correctAnswer && !answer)
-		delete qparams.subTasks;
+		delete qparams['subTasks.answer'];
 
 	let sort = {};
 	if (sortBy)
 		sort[sortBy] = sortOrder == 'Возрастание' ? 1 : -1;
-	const _table = await Record.find(qparams).sort(sort).exec();
-
+	else
+		sort = false;
+	let _table = Record.find(qparams);
+	if (sort)
+		_table = _table.sort(sort);
+	_table = await _table.exec();
 	
 	let table = [];
 	for (let rec of _table) {
@@ -136,8 +103,82 @@ app.post('/', async (rq, rs) => {
 			table.push(t);
 		}
 	}
+	return table;
+}
 
-	rs.render('table', { table });
+
+app.get('/readf', async (rq, rs) => {
+	await Record.deleteMany({}).exec();
+
+	let path = rq.query.dir || './files';
+	let files = fs.readdirSync(path);
+	for (let file of files) {
+		let records = JSON.parse(fs.readFileSync(path + '/' + file, 'utf8'));
+		for (let data of records) {
+			for (let [k, v] of Object.entries(data))
+				if (typeof v == 'string')
+					data[k] = v.toLowerCase();
+			let record = new Record(data);
+			await record.save();
+		}
+	}
+
+	rs.send('<script>alert("Успех"); location.href = "/";</script>');
+});
+app.post('/dbappend', async (rq, rs) => {
+	try {
+		const json = rq.body;
+		console.log(json);
+		for (const jrec of json) {
+			for (k in jrec)
+				if (typeof jrec[k] == 'string')
+					jrec[k] = jrec[k].toLowerCase();
+			let rec = new Record(jrec);
+			rec.save();
+		}
+		rs.end();
+	}
+	catch {
+		rs.set(401).end();
+	}
+});
+app.get('/', (rq, rs) => {
+	rs.render('form');
+});
+app.post('/', async (rq, rs) => {
+	let table = await getTable(rq, rs);
+	if (rq.body.xlsx) {
+		const wb = new Workbook();
+		const sheet = wb.addWorksheet('Sheet1');
+		const ttrv = [
+			['taskName', 20],
+			['student', 20],
+			['class', 7],
+			['mark', 5],
+			['datetime', 20],
+			['subTaskName', 20],
+			['text', 80],
+			['correctAnswer', 10],
+			['answer', 10]
+		];
+		const title = sheet.addRow(ttrv.map(v => v[0]));
+		for (let r of table)
+			sheet.addRow([r.taskName, r.student, r.class, r.mark, r.datetime, r.name, r.text, r.correctAnswer, r.answer]);
+		for (let i = 1; i <= ttrv.length; i++) {
+			title.getCell(i).fill = {
+				type: 'pattern',
+				pattern: 'lightGray'
+			};
+			let col = sheet.getColumn(i);
+			col.alignment = { wrapText: true };
+			col.width = ttrv[i - 1][1];
+		}
+		
+		await wb.xlsx.writeFile('./export.xlsx');
+		rs.download('./export.xlsx');
+	}
+	else
+		rs.render('table', { table });
 })
 
 app.listen(1338);

@@ -2,3 +2,4 @@ node_modules
 nodejs
 cfg.js
 examples/__pycache__
+export.xlsx
