@@ -10,9 +10,7 @@
 - Ярлык на меню (MENU.url)
 
 ## Первый запуск
-Для начала работы следует установить [MongoDB](https://www.mongodb.com/try/download/community?tck=docs_server) с *MongoDB Compass*. По завершении этих действий открываем *Compass*, подключаемся кнопкой «connect». Далее создаем новую базу: название - «resultsTableS», коллекция – «records».
-
-Далее качаем [Node.js](https://nodejs.org/en/download/) в формате **.zip** и распаковываем в папку с именем **nodejs** в каталоге модуля. Теперь запускаем файл **init.bat**.
+Нужно скачать [Node.js](https://nodejs.org/en/download/) в формате **.zip** и распаковываем в папку с именем **nodejs** в каталоге модуля. Далее запустить файл **init.bat**.
 
 ## Работа
 Запускаем **start.bat**. Далее для открытия меню нужно запустить **MENU.url** (файл-ссылка).
