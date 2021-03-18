@@ -1,5 +1,5 @@
 import requests
-from format import export
+from template import export
 from random import randint as rnd
 from time import time
 from json import dumps as jd
@@ -8,7 +8,7 @@ TASKNAME = 'My task name'
 
 # генератор записей
 def NewRecord(student):
-    cp = export[0].copy()
+    cp = export.copy()
     cp['subTasks'].clear()
     cp['datetime'] = time()
     cp['class'] = '11В'
